@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-collector
+  namespace: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-collector
+  template:
+    metadata:
+      labels:
+        app: api-collector
+    spec:
+      containers:
+      - name: api-collector
+        image: givenh/api-collector:v2 # 이미지 태그를 명시적으로 변경
+        imagePullPolicy: Always # 항상 최신 이미지를 가져오도록 설정
+        ports:
+        - containerPort: 5000
+        env:
+        - name: RABBITMQ_HOST
+          value: "rabbitmq-service.my-app.svc.cluster.local" # FQDN 사용
+        - name: BITGET_SYMBOLS
+          value: "BTCUSDT, ETHUSDT"
+        - name: BITGET_MARKET_TYPES
+          value: "spot, futures"
